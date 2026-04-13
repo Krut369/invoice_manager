@@ -71,6 +71,7 @@ export function Header({
 
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("authToken");
     toast.success("Logged out successfully");
     navigate("/login");
   };

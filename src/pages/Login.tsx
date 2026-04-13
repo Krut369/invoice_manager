@@ -37,18 +37,38 @@ const Login = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     
-    // Simulate a brief delay for UX
-    await new Promise((resolve) => setTimeout(resolve, 800));
+    try {
+      const response = await fetch("https://infernxt.com/py-extraction-endpoint/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: values.username,
+          password: values.password,
+        }),
+      });
 
-    if (values.username === "admin" && values.password === "admin123") {
-      localStorage.setItem("isAuthenticated", "true");
-      toast.success("Login successful!");
-      navigate("/");
-    } else {
-      toast.error("Invalid username or password");
+      if (response.ok) {
+        const data = await response.json();
+        if (data.access_token) {
+          localStorage.setItem("isAuthenticated", "true");
+          localStorage.setItem("authToken", data.access_token);
+          toast.success("Login successful!");
+          navigate("/");
+        } else {
+          toast.error("Invalid response from server");
+        }
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        toast.error(errorData.detail || "Invalid username or password");
+      }
+    } catch (error) {
+      toast.error("An error occurred during login");
+      console.error("Login error:", error);
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
 
   return (
@@ -81,7 +101,7 @@ const Login = () => {
                       <div className="relative">
                         <User className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input 
-                          placeholder="admin" 
+                          placeholder="in-admin" 
                           {...field} 
                           className="pl-9 bg-slate-50/50"
                         />
@@ -120,7 +140,7 @@ const Login = () => {
         </CardContent>
         <CardFooter className="flex flex-col space-y-4 text-center">
           <p className="text-sm text-muted-foreground italic">
-            Hint: Use admin / admin123
+            Hint: Use in-admin / admin@1234
           </p>
         </CardFooter>
       </Card>
