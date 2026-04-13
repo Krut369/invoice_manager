@@ -14,8 +14,11 @@ import {
   Sparkles,
   Layers,
   Sun,
-  Moon
+  Moon,
+  LogOut
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -63,7 +66,14 @@ export function Header({
   persona,
   onPersonaChange,
 }: HeaderProps) {
+  const navigate = useNavigate();
   const [isDark, setIsDark] = useState(true);
+
+  const handleLogout = () => {
+    localStorage.removeItem("isAuthenticated");
+    toast.success("Logged out successfully");
+    navigate("/login");
+  };
 
   const toggleTheme = () => {
     const root = window.document.documentElement;
@@ -119,6 +129,16 @@ export function Header({
               className="rounded-full h-10 w-10 border-border/40 bg-secondary/30 hover:bg-secondary/60 backdrop-blur-sm transition-colors"
             >
               {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </Button>
+
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleLogout}
+              className="rounded-full h-10 w-10 border-border/40 bg-secondary/30 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 backdrop-blur-sm transition-colors"
+              title="Logout"
+            >
+              <LogOut className="h-4 w-4" />
             </Button>
           </div>
         </div>
