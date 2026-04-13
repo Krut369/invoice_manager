@@ -138,11 +138,6 @@ const Login = () => {
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="flex flex-col space-y-4 text-center">
-          <p className="text-sm text-muted-foreground italic">
-            Hint: Use in-admin / admin@1234
-          </p>
-        </CardFooter>
       </Card>
     </div>
   );
